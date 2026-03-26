@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication System with A/B Test</title>
+    <style>
+        body {
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f2f2f2;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+        button {
+            width: 48%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login / Signup</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <div class="btn-group">
+        <button id="loginBtn">Login</button>
+        <button id="signupBtn">Sign Up</button>
+    </div>
+</div>
+
+<script type="module">
+    // ----------------- Auth Logic -----------------
+    function getUsers() {
+        return JSON.parse(localStorage.getItem("users")) || {};
+    }
+
+    function saveUsers(users) {
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function signup(username, password) {
+        if (!username || !password) return "EMPTY_FIELDS";
+
+        const users = getUsers();
+        if (users[username]) return "USER_EXISTS";
+
+        users[username] = password;
+        saveUsers(users);
+
+        return "SUCCESS";
+    }
+
+    function login(username, password) {
+        const users = getUsers();
+        if (!users[username]) return "USER_NOT_FOUND";
+        if (users[username] !== password) return "WRONG_PASSWORD";
+
+        return "SUCCESS";
+    }
+
+    // ----------------- A/B Testing -----------------
+    function getVariant() {
+        let variant = localStorage.getItem("ab_variant");
+        if (!variant) {
+            variant = Math.random() < 0.5 ? "A" : "B";
+            localStorage.setItem("ab_variant", variant);
+        }
+        return variant;
+    }
+
+    const variant = getVariant();
+    console.log("User sees A/B variant:", variant);
+
+    if (variant === "B") {
+        document.body.style.backgroundColor = "#dff0d8"; // greenish background
+        document.querySelectorAll("button").forEach(b => {
+            b.style.backgroundColor = "#4CAF50";
+            b.style.color = "white";
+        });
+    }
+
+    // ----------------- Button Logic -----------------
+    document.getElementById("signupBtn").addEventListener("click", () => {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        const result = signup(u, p);
+        alert(result);
+    });
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        const result = login(u, p);
+        alert(result);
+    });
+</script>
+
+</body>
+</html>
