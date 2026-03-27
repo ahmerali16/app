@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      CI: true  # This disables Husky hooks automatically
+      CI: true   # helps Husky know it's CI
 
     steps:
       # 1️⃣ Checkout code
@@ -20,20 +20,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20  # Upgrade to 20 to satisfy ESLint engines
+          node-version: 20   # matches ESLint requirements
 
-      # 3️⃣ Install dependencies without running Husky
+      # 3️⃣ Disable Husky prepare scripts
+      - name: Disable Husky in CI
+        run: npm pkg set scripts.prepare=""
+
+      # 4️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Debug info (optional)
-      - name: Show environment info
-        run: |
-          node --version
-          npm --version
-          npx --version
-          ls -la node_modules/.bin
-
-      # 5️⃣ Run tests with local Jest
+      # 5️⃣ Run tests
       - name: Run tests
         run: npx jest --coverage
