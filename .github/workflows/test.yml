@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      CI: true   # helps Husky know it's CI
+      CI: true
 
     steps:
       # 1️⃣ Checkout code
@@ -20,11 +20,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20   # matches ESLint requirements
+          node-version: 20  # satisfies ESLint engines
 
-      # 3️⃣ Disable Husky prepare scripts
-      - name: Disable Husky in CI
-        run: npm pkg set scripts.prepare=""
+      # 3️⃣ Disable Husky prepare script
+      - name: Disable Husky prepare in CI
+        run: |
+          node -p "let p=require('./package.json'); p.scripts.prepare=''; require('fs').writeFileSync('package.json', JSON.stringify(p,null,2))"
 
       # 4️⃣ Install dependencies
       - name: Install dependencies
