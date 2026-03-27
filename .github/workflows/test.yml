@@ -9,27 +9,31 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      CI: true   # <-- this disables Husky hooks automatically
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18   # Or 20 if ESLint requires
 
-      - name: Install dependencies and disable Husky
-        run: |
-          npm set-script prepare ""
-          npm install
+      # 3️⃣ Install dependencies (normal install, no script disabling needed)
+      - name: Install dependencies
+        run: npm install
 
-      - name: Show Node/npm info (debug)
+      # 4️⃣ Debug environment (optional)
+      - name: Show Node/npm info
         run: |
           node --version
           npm --version
           npx --version
           ls -la node_modules/.bin
 
+      # 5️⃣ Run tests
       - name: Run tests
         run: npx jest --coverage
