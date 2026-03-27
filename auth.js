@@ -47,7 +47,7 @@ function login(username, password) {
     if (!users[username]) return "User not found!";
     if (users[username] !== password) return "Incorrect password!";
 
-    return "Login successful!";
+    return "Login succeul!";
 }
 
 // Export functions for Node.js / Jest testing
