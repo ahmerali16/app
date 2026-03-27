@@ -21,13 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Show Node version
-        run: node --version
+      - name: Show Node and npm versions
+        run: |
+          node --version
+          npm --version
+          npx --version
 
-      - name: Show npm version
-        run: npm --version
-
-      - name: List files
+      - name: List project files
         run: ls -la
 
       - name: Run tests
