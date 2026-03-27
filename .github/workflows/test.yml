@@ -1,34 +1,38 @@
 name: Run Tests
 
 on:
-  push:
-  pull_request:
+  push:          # Trigger on any push
+  pull_request:  # Trigger on pull requests
 
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # Forces Node.js 24 for GitHub actions compatibility
+
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 18   # Or 20 if you want ESLint to match exactly
 
+      # 3️⃣ Install dependencies without running Husky scripts
       - name: Install dependencies
-        run: npm install
+        run: npm install --ignore-scripts
 
-      - name: Show Node and npm versions
+      # 4️⃣ Show debug info (optional, helps if tests fail)
+      - name: Show environment info
         run: |
           node --version
           npm --version
           npx --version
+          ls -la
 
-      - name: List project files
-        run: ls -la
-
+      # 5️⃣ Run tests using local Jest
       - name: Run tests
         run: npx jest --coverage
