@@ -27,11 +27,11 @@ jobs:
         run: |
           node -p "let p=require('./package.json'); p.scripts.prepare=''; require('fs').writeFileSync('package.json', JSON.stringify(p,null,2))"
 
-      # Install dependencies including dev
+      # Install dependencies including devDependencies
       - name: Install dependencies
         run: npm install --include=dev
 
-      # Show debug info
+      # Debug info
       - name: Show environment info
         run: |
           node --version
@@ -39,6 +39,10 @@ jobs:
           npx --version
           ls -la node_modules/.bin
 
-      # Run Jest
+      # Ensure Jest is executable
+      - name: Make Jest executable
+        run: chmod +x ./node_modules/.bin/jest
+
+      # Run tests
       - name: Run tests
         run: ./node_modules/.bin/jest --coverage
