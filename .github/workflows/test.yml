@@ -27,7 +27,7 @@ jobs:
       - name: Show npm version
         run: npm --version
 
-      - name: List files in workspace
+      - name: List files
         run: ls -la
 
       - name: Run tests
