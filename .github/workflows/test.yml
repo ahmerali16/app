@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # <-- force Node.js 24 env
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,5 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Show Node version
+        run: node --version
+
+      - name: Show npm version
+        run: npm --version
+
+      - name: List files in workspace
+        run: ls -la
+
       - name: Run tests
-        run: npm test
+        run: npx jest --coverage
