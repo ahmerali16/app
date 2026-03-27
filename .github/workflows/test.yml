@@ -12,25 +12,33 @@ jobs:
       CI: true
 
     steps:
-      # 1️⃣ Checkout code
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js
+      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20  # satisfies ESLint engines
+          node-version: 20
 
-      # 3️⃣ Disable Husky prepare script
+      # Disable Husky prepare script
       - name: Disable Husky prepare in CI
         run: |
           node -p "let p=require('./package.json'); p.scripts.prepare=''; require('fs').writeFileSync('package.json', JSON.stringify(p,null,2))"
 
-      # 4️⃣ Install dependencies
+      # Install dependencies including dev
       - name: Install dependencies
-        run: npm install
+        run: npm install --include=dev
 
-      # 5️⃣ Run tests
+      # Show debug info
+      - name: Show environment info
+        run: |
+          node --version
+          npm --version
+          npx --version
+          ls -la node_modules/.bin
+
+      # Run Jest
       - name: Run tests
-        run: npx jest --coverage
+        run: ./node_modules/.bin/jest --coverage
